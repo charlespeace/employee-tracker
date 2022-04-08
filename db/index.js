@@ -1,5 +1,5 @@
+// Include MYSQL2 and establish database connection
 const mysql = require('mysql2');
-
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -8,6 +8,8 @@ const connection = mysql.createConnection({
 });
 
 connection.connect();
+
+// Create and export db class
 
 class db {
     constructor(connection) {

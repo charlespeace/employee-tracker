@@ -1,6 +1,10 @@
+// Include packages and db class
+
 const { prompt } = require('inquirer');
 const db = require('./db');
 require('console.table');
+
+// Prompt user and call function based on user's selection
 
 function promptUser () {
     prompt([
@@ -69,11 +73,12 @@ function promptUser () {
     })
 }
 
+// Functions to execute MYSQL lines from index.js
+
 function viewDepartments() {
     db.viewAllDepartments()
     .then(([rows]) => {
         let departments = rows;
-        console.log("\n");
         console.table(departments);
     })
     .then(() => promptUser())
@@ -83,15 +88,34 @@ function viewRoles() {
     db.viewAllRoles()
     .then(([rows]) => {
         let roles = rows;
-        console.log("\n");
         console.table(roles);
     })
     .then(() => promptUser())
 }
 
-function viewEmployees() {}
+function viewEmployees() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let employees = rows;
+        console.table(employees);
+    })
+    .then(() => promptUser())
+}
 
-function createDepartment() {}
+function createDepartment() {
+    prompt([
+        {
+            name: 'name',
+            message: 'What is the name of the new department?'
+        }
+    ])
+    .then(res => {
+        let name = res;
+        db.addDepartment(name)
+        .then(() => console.log('Added department'))
+        .then(() => promptUser())
+    })
+}
 
 function createRole() {}
 
