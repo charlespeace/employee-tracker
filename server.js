@@ -73,7 +73,7 @@ function promptUser () {
     })
 }
 
-// Functions to execute MYSQL lines from index.js
+// Callback functions to execute MYSQL lines from index.js
 
 function viewDepartments() {
     db.viewAllDepartments()
@@ -181,7 +181,7 @@ function createEmployee() {
                 db.viewAllEmployees()
                 .then(([rows]) => {
                     let employees = rows;
-                    const allManagers = employees.map(({ id, first_name, last_name }) => ({
+                    const allEmployees = employees.map(({ id, first_name, last_name }) => ({
                         name: `${first_name} ${last_name}`,
                         value: id
                     }))
@@ -189,7 +189,7 @@ function createEmployee() {
                         type: 'list',
                         name: 'managerId',
                         message: 'Who is their manager?',
-                        choices: allManagers
+                        choices: allEmployees
                     })
                     .then(res => {
                         let employee = {
@@ -210,7 +210,46 @@ function createEmployee() {
     })
 }
 
-function updateRole() {}
+function updateRole() {
+    db.viewAllEmployees()
+    .then(([rows]) => {
+        let employees = rows;
+        const allEmployees = employees.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }))
+        prompt([
+            {
+                type: 'list',
+                name: 'employeeId',
+                message: "Which employee's would you like to update?",
+                choices: allEmployees
+            }
+        ])
+        .then(res => {
+            let employeeId = res.employeeId;
+            db.viewAllRoles()
+            .then(([rows]) => {
+                let roles = rows;
+                const allRoles = roles.map(({ id, title }) => ({
+                    name: title,
+                    value: id
+                }))
+                prompt([
+                    {
+                        type: 'list',
+                        name: 'roleId',
+                        message: 'What role would you like to apply?',
+                        choices: allRoles
+                    }
+                ])
+                .then(res => db.updateRole(employeeId, res.roleId))
+                .then(() => console.log('Updated role!'))
+                .then(() => promptUser()) 
+            })
+        })
+    })
+}
 
 function end() {
     process.exit();
