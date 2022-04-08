@@ -4,6 +4,17 @@ const { prompt } = require('inquirer');
 const db = require('./db');
 require('console.table');
 
+// Set up server
+
+const express = require('express');
+const PORT = process.env.PORT || 2999;
+const app = express();
+
+// Include middleware
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 // Prompt user and call function based on user's selection
 
 function promptUser () {
@@ -256,3 +267,5 @@ function end() {
 }
 
 promptUser();
+
+app.listen(PORT, () => {})
