@@ -112,14 +112,103 @@ function createDepartment() {
     .then(res => {
         let name = res;
         db.addDepartment(name)
-        .then(() => console.log('Added department'))
+        .then(() => console.log('Added department!'))
         .then(() => promptUser())
     })
 }
 
-function createRole() {}
+function createRole() {
+    db.viewAllDepartments()
+    .then(([rows]) => {
+        let departments = rows;
+        const allDepartments = departments.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }))
+        prompt([
+            {
+                name: 'title',
+                message: 'What is the name of the new role?'
+            },
+            {
+                name: 'salary',
+                message: "What is the new role's annual salary?"
+            },
+            {
+                type: 'list',
+                name: 'department_id',
+                message: 'Which department does the new role belong to?',
+                choices: allDepartments
+            }
+        ])
+        .then(role => {
+            db.addRole(role)
+            .then(() => console.log('Added role!'))
+            .then(() => promptUser())
+        })
+    })
+}
 
-function createEmployee() {}
+function createEmployee() {
+    prompt ([
+        {
+            name: 'first_name',
+            message: "What is the new employee's first name?"
+        },
+        {
+            name: 'last_name',
+            message: "What is the new employee's last name?"
+        }
+    ])
+    .then(res => {
+        let firstName = res.first_name;
+        let lastName = res.last_name;
+        db.viewAllRoles()
+        .then(([rows]) => {
+            let roles = rows;
+            const allRoles = roles.map (({ id, title }) => ({
+                name: title,
+                value: id
+            }))
+            prompt({
+                type: 'list',
+                name: 'roleId',
+                message: 'What is their role?',
+                choices: allRoles
+            })
+            .then(res => {
+                let roleId = res.roleId
+                db.viewAllEmployees()
+                .then(([rows]) => {
+                    let employees = rows;
+                    const allManagers = employees.map(({ id, first_name, last_name }) => ({
+                        name: `${first_name} ${last_name}`,
+                        value: id
+                    }))
+                    prompt ({
+                        type: 'list',
+                        name: 'managerId',
+                        message: 'Who is their manager?',
+                        choices: allManagers
+                    })
+                    .then(res => {
+                        let employee = {
+                            manager_id: res.managerId,
+                            role_id: roleId,
+                            first_name: firstName,
+                            last_name: lastName
+                        }
+                        db.addEmployee(employee)
+                    })
+                    .then(() => console.log(
+                        'Added employee!'
+                    ))
+                    .then(() => promptUser())
+                })
+            })
+        })
+    })
+}
 
 function updateRole() {}
 

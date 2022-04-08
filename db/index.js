@@ -37,7 +37,7 @@ class db {
     }
     addRole(role) {
         return this.connection.promise().query(
-            'DELETE FROM role WHERE id = ?', role
+            'INSERT INTO role SET ?', role
         );
     }
     addEmployee(employee) {
