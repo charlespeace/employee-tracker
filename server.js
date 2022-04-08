@@ -1,4 +1,5 @@
 const { prompt } = require('inquirer');
+const { viewAllRoles, viewAllEmployees } = require('./db');
 const db = require('./db');
 require('console.table');
 
@@ -7,7 +8,7 @@ function promptUser () {
         {
             type: 'list',
             name: 'choice',
-            message: 'Welcome to your employee manager tool! What would you like to do?',
+            message: 'Welcome to your employee management tool! What would you like to do?',
             choices: [
                 {
                     name: 'View all departments',
@@ -39,7 +40,46 @@ function promptUser () {
                 }
             ]
         }
-    ])
-};
+    ]).then(res => {
+        let selection = res.selection;
+        switch (selection) {
+            case 'VIEW_DEPARTMENTS':
+                viewDepartments();
+                break;
+            case 'VIEW_ROLES':
+                viewAllRoles();
+                break;
+            case 'VIEW_EMPLOYEES':
+                viewAllEmployees();
+                break;
+            case 'ADD_DEPARTMENT':
+                createDepartment();
+                break;
+            case 'ADD_ROLE':
+                createRole();
+                break;
+            case 'ADD_EMPLOYEE':
+                createEmployee();
+                break;
+            case 'UPDATE_EMPLOYEE_ROLE':
+                updateRole();
+                break;
+        }
+    })
+}
+
+function viewDepartments() {}
+
+function viewAllRoles() {}
+
+function viewAllEmployees() {}
+
+function createDepartment() {}
+
+function createRole() {}
+
+function createEmployee() {}
+
+function updateRole() {}
 
 promptUser();
