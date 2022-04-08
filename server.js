@@ -1,5 +1,4 @@
 const { prompt } = require('inquirer');
-const { viewAllRoles, viewAllEmployees } = require('./db');
 const db = require('./db');
 require('console.table');
 
@@ -41,16 +40,16 @@ function promptUser () {
             ]
         }
     ]).then(res => {
-        let selection = res.selection;
-        switch (selection) {
+        let choice = res.choice;
+        switch (choice) {
             case 'VIEW_DEPARTMENTS':
                 viewDepartments();
                 break;
             case 'VIEW_ROLES':
-                viewAllRoles();
+                viewRoles();
                 break;
             case 'VIEW_EMPLOYEES':
-                viewAllEmployees();
+                viewEmployees();
                 break;
             case 'ADD_DEPARTMENT':
                 createDepartment();
@@ -64,15 +63,33 @@ function promptUser () {
             case 'UPDATE_EMPLOYEE_ROLE':
                 updateRole();
                 break;
+            default:
+                end();
         }
     })
 }
 
-function viewDepartments() {}
+function viewDepartments() {
+    db.viewAllDepartments()
+    .then(([rows]) => {
+        let departments = rows;
+        console.log("\n");
+        console.table(departments);
+    })
+    .then(() => promptUser())
+}
 
-function viewAllRoles() {}
+function viewRoles() {
+    db.viewAllRoles()
+    .then(([rows]) => {
+        let roles = rows;
+        console.log("\n");
+        console.table(roles);
+    })
+    .then(() => promptUser())
+}
 
-function viewAllEmployees() {}
+function viewEmployees() {}
 
 function createDepartment() {}
 
@@ -81,5 +98,9 @@ function createRole() {}
 function createEmployee() {}
 
 function updateRole() {}
+
+function end() {
+    process.exit();
+}
 
 promptUser();
